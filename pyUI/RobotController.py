@@ -16,6 +16,10 @@ from tkinter.colorchooser import askcolor
 from commonVar import *
 import re
 from tkinter import ttk
+import pynput
+from pynput.keyboard import Key,Listener
+
+
 
 language = languageList['English']
 
@@ -68,7 +72,6 @@ animalNames = [  # used for memorizing individual frames
     'fish', 'fox', 'frog', 'goose', 'goat', 'horse', 'kangaroo', 'lion', 'monkey', 'owl', 'ox', 'penguin', 'person',
     'pig', 'rabbit', 'sheep', 'tiger', 'whale', 'wolf', 'zebra']
 WORDS = animalNames
-
 
 class RobotController:
     def __init__(self, model, lan):
@@ -247,12 +250,45 @@ class RobotController:
         print('Uploader')
         Uploader()
 
+    #Function that checks which key was pressed for the WASD Robot Controller
+    def robot_controller_key_pressed(self, key):
+        try:
+            print('alphanumeric key {0} pressed'.format(
+                key.char))
+        except AttributeError:
+            print('special key {0} pressed'.format(
+                key))
+
+    def robot_controller_key_released(self, key):
+        print('{0} released'.format(
+            key))
+        if key == Key.esc:
+            # Stop listener
+            return False
+
     def createController(self):
         self.frameController = Frame(self.window)
         self.frameController.grid(row=0, column=0, rowspan=9, padx=(5, 10), pady=5)
         label = Label(self.frameController, text=txt('Robot Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
+        label2 = Label(self.frameController, text='W', font=self.myFont)
+        label2.grid(row=1, column=2, columnspan=1)
+        self.controllerLabels.append(label2)
+        label3 = Label(self.frameController, text='A', font=self.myFont)
+        label3.grid(row=2, column=1, columnspan=1)
+        self.controllerLabels.append(label3)
+        label4 = Label(self.frameController, text='S', font=self.myFont)
+        label4.grid(row=2, column=2, columnspan=1)
+        self.controllerLabels.append(label4)
+        label5 = Label(self.frameController, text='D', font=self.myFont)
+        label5.grid(row=2, column=3, columnspan=1)
+        self.controllerLabels.append(label5)
+
+        listener = Listener(on_press =self.robot_controller_key_pressed, on_release = self.robot_controller_key_released)
+        listener.start()
+
+
 
 
     def createDial(self):
