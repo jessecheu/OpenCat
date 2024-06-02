@@ -13,6 +13,7 @@ textEN = {
     'Joint Calibrator':'Joint Calibrator',
     'Skill Composer':'Skill Composer',
     'Task Scheduler':'Task Scheduler',
+    'Robot Controller': 'Robot Controller',
     'Scheduler':'Scheduler',
     'Firmware Uploader':'Firmware Uploader',
     'Eye color picker':'Eye color picker',
