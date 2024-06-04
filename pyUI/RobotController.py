@@ -200,7 +200,8 @@ class RobotController:
         self.playStop = False
         self.mirror = False
         self.createMenu()
-        self.createController()
+        self.createController() #Initializes the createController
+
         self.createDial()
 
         self.ready = 1
@@ -216,6 +217,12 @@ class RobotController:
         if res != -1 and res[0][0] == 'G':
             res = send(goodPorts, ['G', 0])
             printH("gyro status:", res)
+
+        #Listening to the keyboard clicks. The Listener needs to be placed here
+        #otherwise it will crash due using a thread for the interrupts
+        listener = Listener(on_press =self.robotControllerKeyPressed, on_release = self.robotControllerKeyReleased)
+        listener.start()
+
         self.window.focus_force()  # force the main interface to get focus
         self.window.mainloop()
 
@@ -257,15 +264,15 @@ class RobotController:
         try:
             print('alphanumeric key {0} pressed'.format(
                 key.char))
-            if (key is not None and key.char == 'w'):
-                self.wButtonValue.set(True)
-            if (key is not None and key.char == 'a' ):
-                self.aButtonValue.set(True)
-            if (key is not None and key.char == 's' ):
-                self.sButtonValue.set(True)
-            if (key is not None and key.char == 'd' ):
-                self.dButtonValue.set(True)
-
+            if (key.char != Key.esc):
+                if (key is not None and key.char == 'w'):
+                    self.wButtonValue.set(True)
+                if (key is not None and key.char == 'a' ):
+                    self.aButtonValue.set(True)
+                if (key is not None and key.char == 's' ):
+                    self.sButtonValue.set(True)
+                if (key is not None and key.char == 'd' ):
+                    self.dButtonValue.set(True)
 
         except AttributeError:
             print('special key {0} pressed'.format(
@@ -274,17 +281,18 @@ class RobotController:
     def robotControllerKeyReleased(self, key):
         print('{0} released'.format(
             key))
-        if (key is not None and key.char == 'w'):
-            self.wButtonValue.set(False)
-        if (key is not None and key.char == 'a'):
-            self.aButtonValue.set(False)
-        if (key is not None and key.char == 's'):
-            self.sButtonValue.set(False)
-        if (key is not None and key.char == 'd'):
-            self.dButtonValue.set(False)
+        if (key != Key.esc):
+            if (key is not None and key.char == 'w'):
+                self.wButtonValue.set(False)
+            if (key is not None and key.char == 'a'):
+                self.aButtonValue.set(False)
+            if (key is not None and key.char == 's'):
+                self.sButtonValue.set(False)
+            if (key is not None and key.char == 'd'):
+                self.dButtonValue.set(False)
         if key == Key.esc:
             # Stop listener
-            return False
+            print('Pressed ESC')
 
     #createController(self):
     #is the interface GUI for the WASD and Joystick
@@ -333,12 +341,6 @@ class RobotController:
 
 
         #Joy Stick Interface
-
-
-
-        #Listening to the keyboard clicks
-        listener = Listener(on_press =self.robotControllerKeyPressed, on_release = self.robotControllerKeyReleased)
-        listener.start()
 
 
 
@@ -1762,6 +1764,8 @@ if __name__ == '__main__':
         #            t=threading.Thread(target=keepReadingSerial,args=(goodPorts,))
         #            t.start()
         RobotController(model, language)
+
+
         closeAllSerial(goodPorts)
         os._exit(0)
     except Exception as e:
