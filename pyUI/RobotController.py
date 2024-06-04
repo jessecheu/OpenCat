@@ -250,42 +250,94 @@ class RobotController:
         print('Uploader')
         Uploader()
 
-    #Function that checks which key was pressed for the WASD Robot Controller
-    def robot_controller_key_pressed(self, key):
+    #robotControllerKeyPressed(self, key):
+    #checks which key was pressed for the WASD Robot Controller
+    #and is the control logic using keyboard clicks and joystick
+    def robotControllerKeyPressed(self, key):
         try:
             print('alphanumeric key {0} pressed'.format(
                 key.char))
+            if (key is not None and key.char == 'w'):
+                self.wButtonValue.set(True)
+            if (key is not None and key.char == 'a' ):
+                self.aButtonValue.set(True)
+            if (key is not None and key.char == 's' ):
+                self.sButtonValue.set(True)
+            if (key is not None and key.char == 'd' ):
+                self.dButtonValue.set(True)
+
+
         except AttributeError:
             print('special key {0} pressed'.format(
                 key))
 
-    def robot_controller_key_released(self, key):
+    def robotControllerKeyReleased(self, key):
         print('{0} released'.format(
             key))
+        if (key is not None and key.char == 'w'):
+            self.wButtonValue.set(False)
+        if (key is not None and key.char == 'a'):
+            self.aButtonValue.set(False)
+        if (key is not None and key.char == 's'):
+            self.sButtonValue.set(False)
+        if (key is not None and key.char == 'd'):
+            self.dButtonValue.set(False)
         if key == Key.esc:
             # Stop listener
             return False
 
+    #createController(self):
+    #is the interface GUI for the WASD and Joystick
     def createController(self):
+
         self.frameController = Frame(self.window)
         self.frameController.grid(row=0, column=0, rowspan=9, padx=(5, 10), pady=5)
         label = Label(self.frameController, text=txt('Robot Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
-        label2 = Label(self.frameController, text='W', font=self.myFont)
-        label2.grid(row=1, column=2, columnspan=1)
-        self.controllerLabels.append(label2)
-        label3 = Label(self.frameController, text='A', font=self.myFont)
-        label3.grid(row=2, column=1, columnspan=1)
-        self.controllerLabels.append(label3)
-        label4 = Label(self.frameController, text='S', font=self.myFont)
-        label4.grid(row=2, column=2, columnspan=1)
-        self.controllerLabels.append(label4)
-        label5 = Label(self.frameController, text='D', font=self.myFont)
-        label5.grid(row=2, column=3, columnspan=1)
-        self.controllerLabels.append(label5)
 
-        listener = Listener(on_press =self.robot_controller_key_pressed, on_release = self.robot_controller_key_released)
+        #WASD Keys Interface
+
+        self.wasdValues = [1, 1, 1, 1]
+        pressedColor = ['red', 'green']
+
+        wth = self.connectW
+
+        self.wButtonValue = BooleanVar()
+        wDialState = NORMAL
+        wButton = Checkbutton(self.frameController, text="W", indicator=0, width=wth, fg=pressedColor[self.wasdValues[0]],
+                             state=wDialState,
+                             var=self.wButtonValue, command=None)
+        wButton.grid(row=5, column=3)
+
+        self.aButtonValue = BooleanVar()
+        aDialState = NORMAL
+        aButton = Checkbutton(self.frameController, text="A", indicator=0, width=wth, fg=pressedColor[self.wasdValues[1]],
+                             state=aDialState,
+                             var=self.aButtonValue, command=None)
+        aButton.grid(row=7, column=2)
+
+        self.sButtonValue = BooleanVar()
+        sDialState = NORMAL
+        sButton = Checkbutton(self.frameController, text="S", indicator=0, width=wth, fg=pressedColor[self.wasdValues[2]],
+                             state=sDialState,
+                             var=self.sButtonValue, command=None)
+        sButton.grid(row=7, column=3)
+
+        self.dButtonValue = BooleanVar()
+        dDialState = NORMAL
+        dButton = Checkbutton(self.frameController, text="D", indicator=0, width=wth, fg=pressedColor[self.wasdValues[3]],
+                             state=dDialState,
+                             var=self.dButtonValue, command=None)
+        dButton.grid(row=7, column=4)
+
+
+        #Joy Stick Interface
+
+
+
+        #Listening to the keyboard clicks
+        listener = Listener(on_press =self.robotControllerKeyPressed, on_release = self.robotControllerKeyReleased)
         listener.start()
 
 
