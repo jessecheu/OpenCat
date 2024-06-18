@@ -264,14 +264,29 @@ class RobotController:
         try:
             print('alphanumeric key {0} pressed'.format(
                 key.char))
+            self.ready = 1
+
+            self.binderValue.append(0)
+            self.setAngle(0, 0.5)
+            self.set6Axis(0, 45)
+
             if (key.char != Key.esc):
                 if (key is not None and key.char == 'w'):
                     self.wButtonValue.set(True)
-                if (key is not None and key.char == 'a' ):
+                    #When 'w' is pressed, the robot moves forward
+                    #See leg movement doc.. to be made.
+                    #self.ready = 1
+
+                    #self.binderValue.append(0)
+                    #self.setAngle(0, 0.5)
+                    #self.set6Axis(0, 45)
+
+
+                elif (key is not None and key.char == 'a' ):
                     self.aButtonValue.set(True)
-                if (key is not None and key.char == 's' ):
+                elif (key is not None and key.char == 's' ):
                     self.sButtonValue.set(True)
-                if (key is not None and key.char == 'd' ):
+                elif(key is not None and key.char == 'd' ):
                     self.dButtonValue.set(True)
 
         except AttributeError:
@@ -284,22 +299,23 @@ class RobotController:
         if (key != Key.esc):
             if (key is not None and key.char == 'w'):
                 self.wButtonValue.set(False)
-            if (key is not None and key.char == 'a'):
+            elif (key is not None and key.char == 'a'):
                 self.aButtonValue.set(False)
-            if (key is not None and key.char == 's'):
+            elif (key is not None and key.char == 's'):
                 self.sButtonValue.set(False)
-            if (key is not None and key.char == 'd'):
+            elif (key is not None and key.char == 'd'):
                 self.dButtonValue.set(False)
-        if key == Key.esc:
+        elif (key == Key.esc):
             # Stop listener
             print('Pressed ESC')
+
 
     #createController(self):
     #is the interface GUI for the WASD and Joystick
     def createController(self):
 
         self.frameController = Frame(self.window)
-        self.frameController.grid(row=0, column=0, rowspan=9, padx=(5, 10), pady=5)
+        self.frameController.grid(row=0, column=0, rowspan=25, padx=(5, 10), pady=5)
         label = Label(self.frameController, text=txt('Robot Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
@@ -341,7 +357,9 @@ class RobotController:
 
 
         #Joy Stick Interface
-
+        joyStickCanvas = Canvas(self.window, width=50, height=50, bg="black")
+        joyStickCanvas.create_rectangle(50, 150, 250, 50, fill="cyan")
+        joyStickCanvas.grid(row=2, column=2)
 
 
 
